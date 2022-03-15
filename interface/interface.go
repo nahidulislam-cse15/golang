@@ -9,7 +9,7 @@ type person struct {
 
 }
 type secretAgent struct{
-	person
+	person //type embedding for composition( instead of inheritance )
 	id int
 }
 // func speak(p person){
@@ -36,6 +36,9 @@ func test(h human){
 
 	//fmt.Println("test",h)
 }
+func (p person ) SayHello() {
+	fmt.Printf("Hi, I am %s", p.name)
+   }
 func main() {
 	p1:=person{"nahid",24}
 	fmt.Println(p1)
@@ -58,6 +61,7 @@ func main() {
 	//	fmt.Printf("%T",p1.speak())
 	test(p1)
 	test(s1)
+	p1.SayHello()
 
 
 }
