@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func main() {
@@ -12,10 +13,24 @@ func main() {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(dir)
-	createFile("test.txt","Golang is best programming Language")
-	//file exist & info 
+	createFile("test.txt", "Golang is best programming Language")
+	//file exist & info
 	fileInformations("test.txt")
-	makeDirectory("testing")
+	//makeDirectory("testing2")
+base:=filepath.Base(dir)
+fmt.Println(base)
+relativePath:=filepath.Join("testing")
+fmt.Println(relativePath)
+absolutepath,err:=filepath.Abs("testing")
+if err != nil {
+	fmt.Println(err.Error())
+}
+fmt.Println(absolutepath)
+newPath:=filepath.Join(absolutepath,"..","..","..","newFolder2")
+fmt.Println(newPath)
+makeDirectory(newPath)
+// external url in backtic
+//makeDirectory(`D:\Externaltest`)
 
 }
 
@@ -35,22 +50,24 @@ func createFile(fileName, content string) {
 	fmt.Println(n)
 
 }
+
 ////file exist & info
 func fileInformations(fileName string) {
-	
-	fi,err:=os.Stat(fileName)
+
+	fi, err := os.Stat(fileName)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println("dir status=",fi.IsDir())
-	fmt.Println("Name=",fi.Name())
-	fmt.Println("Size= ",fi.Size())
+	fmt.Println("dir status=", fi.IsDir())
+	fmt.Println("Name=", fi.Name())
+	fmt.Println("Size= ", fi.Size())
 	fmt.Printf("Modification Time=")
-	fmt.Println( fi.ModTime().Date())
+	fmt.Println(fi.ModTime().Date())
 }
+
 //making directory
-func makeDirectory(dirName string){
-	err:=os.Mkdir(dirName, 777)
+func makeDirectory(dirName string) {
+	err := os.Mkdir(dirName, 777)
 	if err != nil {
 		fmt.Printf("Error creating directory")
 	}
