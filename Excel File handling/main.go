@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-   _ "image/gif"
+    _ "image/gif"
     _ "image/jpeg"
     _ "image/png"
 
@@ -23,9 +23,11 @@ func main() {
 	if err := f.SaveAs("Book1.xlsx"); err != nil {
 		fmt.Println(err)
 	}
+	index = f.NewSheet("Sheet1")
 	readingExcel()
 	addChart()
 	addImage()
+	sheetFormat()
 
 }
 
@@ -120,6 +122,10 @@ func addImage() {
 		fmt.Println(err)
 		return
 	}
+	err=f.SetSheetBackground("Sheet1", "imageb.jpg")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	// Insert a picture.
 	if err := f.AddPicture("Sheet1", "A2", "image.png", ""); err != nil {
 		fmt.Println(err)
@@ -148,4 +154,16 @@ func addImage() {
 	if err = f.Close(); err != nil {
 		fmt.Println(err)
 	}
+
+}
+func sheetFormat(){
+	f := excelize.NewFile()
+const sheet = "Sheet1"
+if err := f.SetSheetFormatPr("Sheet1", excelize.ZeroHeight(true)); err != nil {
+    fmt.Println(err)
+}
+if err := f.SetRowVisible("Sheet1", 15, true); err != nil {
+    fmt.Println(err)
+}
+f.SaveAs("Book4.xlsx")
 }
