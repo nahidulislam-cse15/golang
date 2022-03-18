@@ -16,21 +16,9 @@ func main() {
 	createFile("test.txt", "Golang is best programming Language")
 	//file exist & info
 	fileInformations("test.txt")
-	//makeDirectory("testing2")
-base:=filepath.Base(dir)
-fmt.Println(base)
-relativePath:=filepath.Join("testing")
-fmt.Println(relativePath)
-absolutepath,err:=filepath.Abs("testing")
-if err != nil {
-	fmt.Println(err.Error())
-}
-fmt.Println(absolutepath)
-newPath:=filepath.Join(absolutepath,"..","..","..","newFolder2")
-fmt.Println(newPath)
-makeDirectory(newPath)
-// external url in backtic
-//makeDirectory(`D:\Externaltest`)
+	makeDirectoryOutside(dir)
+	//rename 
+	os.Rename("test.txt","test01.txt")
 
 }
 
@@ -71,4 +59,21 @@ func makeDirectory(dirName string) {
 	if err != nil {
 		fmt.Printf("Error creating directory")
 	}
+}
+func makeDirectoryOutside(dir string){
+	
+base:=filepath.Base(dir)//base returns last element of path
+fmt.Println(base)
+relativePath:=filepath.Join("testing")
+fmt.Println(relativePath)
+absolutepath,err:=filepath.Abs("testing")
+if err != nil {
+	fmt.Println(err.Error())
+}
+fmt.Println(absolutepath)
+newPath:=filepath.Join(absolutepath,"..","..","..","newFolder2")
+fmt.Println(newPath)
+//makeDirectory(newPath)
+// external url in backtic
+//makeDirectory(`D:\Externaltest`)
 }
