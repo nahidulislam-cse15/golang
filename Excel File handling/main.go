@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-    _ "image/gif"
-    _ "image/jpeg"
-    _ "image/png"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 
 	"github.com/xuri/excelize"
 )
@@ -24,10 +24,12 @@ func main() {
 		fmt.Println(err)
 	}
 	index = f.NewSheet("Sheet1")
+	
 	readingExcel()
 	addChart()
 	addImage()
 	sheetFormat()
+	worksheetView()
 
 }
 
@@ -113,8 +115,8 @@ func addChart() {
 	}
 }
 func addImage() {
-    f := excelize.NewFile()
-    if err := f.SaveAs("Book3.xlsx"); err != nil {
+	f := excelize.NewFile()
+	if err := f.SaveAs("Book3.xlsx"); err != nil {
 		fmt.Println(err)
 	}
 	f, err := excelize.OpenFile("Book3.xlsx")
@@ -122,7 +124,7 @@ func addImage() {
 		fmt.Println(err)
 		return
 	}
-	err=f.SetSheetBackground("Sheet1", "imageb.jpg")
+	err = f.SetSheetBackground("Sheet1", "imageb.jpg")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -156,14 +158,58 @@ func addImage() {
 	}
 
 }
-func sheetFormat(){
+func sheetFormat() {
 	f := excelize.NewFile()
-const sheet = "Sheet1"
-if err := f.SetSheetFormatPr("Sheet1", excelize.ZeroHeight(true)); err != nil {
-    fmt.Println(err)
+	const sheet = "Sheet1"
+	if err := f.SetSheetFormatPr("Sheet1", excelize.ZeroHeight(true)); err != nil {
+		fmt.Println(err)
+	}
+	if err := f.SetRowVisible("Sheet1", 15, true); err != nil {
+		fmt.Println(err)
+	}
+	f.SaveAs("Book4.xlsx")
 }
-if err := f.SetRowVisible("Sheet1", 15, true); err != nil {
-    fmt.Println(err)
-}
-f.SaveAs("Book4.xlsx")
+func worksheetView() {
+	f := excelize.NewFile()
+	const sheet = "Sheet1"
+
+	if err := f.SetSheetViewOptions(sheet, 0,
+		excelize.DefaultGridColor(false),
+		excelize.ShowFormulas(true),
+		excelize.ShowGridLines(true),
+		excelize.ShowRowColHeaders(true),
+		excelize.RightToLeft(false),
+		excelize.ShowRuler(false),
+		excelize.View("pageLayout"),
+		excelize.TopLeftCell("C3"),
+		excelize.ZoomScale(80),
+	); err != nil {
+		fmt.Println(err)
+	}
+
+	var zoomScale excelize.ZoomScale
+	fmt.Println("Default:")
+	fmt.Println("- zoomScale: 80")
+
+	if err := f.SetSheetViewOptions(sheet, 0, excelize.ZoomScale(200)); err != nil {
+		fmt.Println(err)
+	}
+
+	if err := f.GetSheetViewOptions(sheet, 0, &zoomScale); err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Used out of range value:")
+	fmt.Println("- zoomScale:", zoomScale)
+
+	if err := f.SetSheetViewOptions(sheet, 0, excelize.ZoomScale(123)); err != nil {
+		fmt.Println(err)
+	}
+
+	if err := f.GetSheetViewOptions(sheet, 0, &zoomScale); err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Used correct value:")
+	fmt.Println("- zoomScale:", zoomScale)
 }
