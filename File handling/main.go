@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func main() {
@@ -17,8 +19,17 @@ func main() {
 	//file exist & info
 	fileInformations("test.txt")
 	makeDirectoryOutside(dir)
-	//rename 
-	os.Rename("test.txt","test01.txt")
+	//rename
+	os.Rename("test.txt", "test01.txt")
+
+	truncateFile("test01.txt")
+	//	fileInformations("test.txt")
+	fileInformations("test01.txt")
+	createFile("test.txt", "Golang is best programming Language")
+
+	//DeleteFile("test.txt")
+	CheckPermissions("test.txt")
+	change("test.txt")
 
 }
 
@@ -28,6 +39,8 @@ func createFile(fileName, content string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	fmt.Println(*posf)
+	log.Println(*posf)
 	defer posf.Close()
 
 	n, err := posf.Write([]byte(content))
@@ -51,6 +64,9 @@ func fileInformations(fileName string) {
 	fmt.Println("Size= ", fi.Size())
 	fmt.Printf("Modification Time=")
 	fmt.Println(fi.ModTime().Date())
+	fmt.Println("Permissions:", fi.Mode())
+	fmt.Printf("System interface type: %T\n", fi.Sys())
+	fmt.Printf("System info: %+v\n\n", fi.Sys())
 }
 
 //making directory
@@ -60,20 +76,79 @@ func makeDirectory(dirName string) {
 		fmt.Printf("Error creating directory")
 	}
 }
-func makeDirectoryOutside(dir string){
-	
-base:=filepath.Base(dir)//base returns last element of path
-fmt.Println(base)
-relativePath:=filepath.Join("testing")
-fmt.Println(relativePath)
-absolutepath,err:=filepath.Abs("testing")
-if err != nil {
-	fmt.Println(err.Error())
+func makeDirectoryOutside(dir string) {
+
+	base := filepath.Base(dir) //base returns last element of path
+	fmt.Println(base)
+	relativePath := filepath.Join("testing")
+	fmt.Println(relativePath)
+	absolutepath, err := filepath.Abs("testing")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(absolutepath)
+	newPath := filepath.Join(absolutepath, "..", "..", "..", "newFolder2")
+	fmt.Println(newPath)
+	//makeDirectory(newPath)
+	// external url in backtic
+	//makeDirectory(`D:\Externaltest`)
 }
-fmt.Println(absolutepath)
-newPath:=filepath.Join(absolutepath,"..","..","..","newFolder2")
-fmt.Println(newPath)
-//makeDirectory(newPath)
-// external url in backtic
-//makeDirectory(`D:\Externaltest`)
+
+//truncating file
+func truncateFile(fileName string) {
+	err := os.Truncate(fileName, 20)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+}
+
+//delete file
+func DeleteFile(fileName string) {
+	if err := os.Remove(fileName); err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
+//check permissions
+func CheckPermissions(fileName string) {
+	file, err := os.OpenFile("test.txt", os.O_WRONLY, 0666)
+	if err != nil {
+		if os.IsPermission(err) {
+			fmt.Println("Error: Write permission denied.")
+		}
+	}
+	file.Close()
+
+	// Test read permissions
+	file, err = os.OpenFile("test.txt", os.O_RDONLY, 0666)
+	if err != nil {
+		if os.IsPermission(err) {
+			fmt.Println("Error: Read permission denied.")
+		}
+	}
+	file.Close()
+}
+
+//change permissions
+func change(fileName string) {
+	err := os.Chmod(fileName, 0777)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Change ownership
+	err = os.Chown(fileName, os.Getuid(), os.Getgid())
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Change timestamps
+	twoDaysFromNow := time.Now().Add(48 * time.Hour)
+	lastAccessTime := twoDaysFromNow
+	lastModifyTime := twoDaysFromNow
+	err = os.Chtimes(fileName, lastAccessTime, lastModifyTime)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
