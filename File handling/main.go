@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -30,6 +30,24 @@ func main() {
 	//DeleteFile("test.txt")
 	CheckPermissions("test.txt")
 	change("test.txt")
+	//copyFile("test_copy.txt", "test.txt")
+	originalFile, err := os.Open("test.txt")
+    if err != nil {
+        fmt.Println(err.Error())
+    }
+    defer originalFile.Close()
+	newFile, err := os.Create("test_copy.txt")
+    if err != nil {
+		fmt.Println(err.Error())
+    }
+    defer newFile.Close()
+	bytesWritten, err = io.Copy(newFile, originalFile)
+    if err != nil {
+		fmt.Println(err.Error())
+    }
+    fmt.Printf("Copied %d bytes.", bytesWritten)
+	
+	//fmt.Println(byteswritten)
 
 }
 
@@ -39,8 +57,8 @@ func createFile(fileName, content string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println(*posf)
-	log.Println(*posf)
+	//fmt.Println(*posf)
+	//log.Println(*posf)
 	defer posf.Close()
 
 	n, err := posf.Write([]byte(content))
@@ -151,4 +169,10 @@ func change(fileName string) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+//copying file
+func copyFile(oldfile string) {
+
+	
 }
