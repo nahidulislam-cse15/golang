@@ -122,3 +122,14 @@ type SplitFunc func(data []byte, atEOF bool) (advance int, token []byte, err err
 // to scan again, but with a bigger buffer because
 // it wasn't enough data to reach the delimiter
 ```
+
+## Archive(Zip) Files
+
+## Extract(Unzip) Archived Files
+## Compress a File
+## Uncompress a File
+## Temporary Files and Directories
+The ioutil package provides two functions: TempDir() and TempFile(). It is the callers responsibility to delete the temporary items when done. The only benefit these functions provide is that you can pass it an empty string for the directory, and it will automatically create the item in the system's default temporary folder (/tmp on Linux). Since os.TempDir() function that will return the defauly system temporary directory.
+
+## Downloading a File Over HTTP
+## Hashing and Checksums
