@@ -89,6 +89,23 @@ os.Remove(filename)
 6-rw, 7-rwe
 
 chown not suported by windows
+Date -20 March 2022
+## Seek Positions in File
+The function File.Seek() Seek sets the offset for the next Read or Write on file to offset, interpreted according to whence: 0 means relative to the origin of the file, 1 means relative to the current offset, and 2 means relative to the end. It returns the new offset and an error, if any.
 
+## Write Bytes to a File
+You can write using just the os package which is needed already to open the file. Since all Go executables are statically linked binaries, every package you import increases the size of your executable. Other packages like io, ioutil, and bufio provide some more help, but they are not necessary.
 
+## Quick Write to File
+The ioutil package has a useful function called WriteFile() that will handle creating/opening, writing a slice of bytes, and closing. It is useful if you just need a quick way to dump a slice of bytes to a file.
+## Use Buffered Writer
+The bufio package lets you create a buffered writer so you can work with a buffer in memory before writing it to disk. This is useful if you need to do a lot manipulation on the data before writing it to disk to save time from disk IO. It is also useful if you only write one byte at a time and want to store a large number in memory before dumping it to file at once, otherwise you would be performing disk IO for every byte. That puts wear and tear on your disk as well as slows down the process.
 
+## Read up to n Bytes from File
+The os.File type provides a couple basic functions. The io, ioutil, and bufio packages provided additional functions for working with files.
+## Quick Read Whole File to Memory
+```
+ data, err := ioutil.ReadFile("test.txt")
+```
+## Use Buffered Reader
+Creating a buffered reader will store a memory buffer with some of the contents. A buffered reader also provides some more functions that are not available on the os.File type or the io.Reader. Default buffer size is 4096 and minimum size is 16.
