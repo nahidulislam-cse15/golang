@@ -13,52 +13,53 @@ import (
 
 func main() {
 	// getting working directory
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	fmt.Println(dir)
-	createFile("test.txt", "Golang is best programming Language")
-	//file exist & info
-	fileInformations("test.txt")
-	makeDirectoryOutside(dir)
-	//rename
-	os.Rename("test.txt", "test01.txt")
+	// dir, err := os.Getwd()
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+	// fmt.Println(dir)
+	// createFile("test.txt", "Golang is best programming Language")
+	// //file exist & info
+	// fileInformations("test.txt")
+	// makeDirectoryOutside(dir)
+	// //rename
+	// os.Rename("test.txt", "test01.txt")
 
-	truncateFile("test01.txt")
-	//	fileInformations("test.txt")
-	fileInformations("test01.txt")
-	createFile("test.txt", "Golang is best programming Language")
+	// truncateFile("test01.txt")
+	// //	fileInformations("test.txt")
+	// fileInformations("test01.txt")
+	// createFile("test.txt", "Golang is best programming Language")
 
-	//DeleteFile("test.txt")
-	CheckPermissions("test.txt")
-	change("test.txt")
+	// //DeleteFile("test.txt")
+	// CheckPermissions("test.txt")
+	// change("test.txt")
 	//copyFile("test_copy.txt", "test.txt")
 	//copy file
-	originalFile, err := os.Open("test.txt")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	defer originalFile.Close()
-	newFile, err := os.Create("test_copy.txt")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	defer newFile.Close()
-	bytesWritten, err := io.Copy(newFile, originalFile)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	fmt.Printf("Copied %d bytes.", bytesWritten)
+	// originalFile, err := os.Open("test.txt")
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+	// defer originalFile.Close()
+	// newFile, err := os.Create("test_copy.txt")
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+	// defer newFile.Close()
+	// bytesWritten, err := io.Copy(newFile, originalFile)
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+	// fmt.Printf("Copied %d bytes.", bytesWritten)
 
-	//fmt.Println(byteswritten)
-	seekFile()
-	writeFile()
-	//Quick Write to File
-	quickWrite()
-	bufferWrite()
-	readFile()
-	bufferReader()
+	// //fmt.Println(byteswritten)
+	// seekFile()
+	// writeFile()
+	// //Quick Write to File
+	// quickWrite()
+	// bufferWrite()
+	// readFile()
+	// bufferReader()
+	scannerReader()
 
 }
 
@@ -346,7 +347,7 @@ func bufferReader() {
 		fmt.Println(err.Error())
 	}
 	bufferRd := bufio.NewReader(file)
-	 // Get bytes without advancing pointer
+	// Get bytes without advancing pointer
 	//  byteSlice := make([]byte, 20)
 	//  byteSlice, err = bufferRd.Peek(5)
 	//  if err != nil {
@@ -364,15 +365,33 @@ func bufferReader() {
 	// 	 fmt.Println(err.Error())
 	//  }
 	//  fmt.Printf("Bytes read:%c",bytesRead1)
-	 bytesRead2 ,err :=bufferRd.ReadBytes('\b')
-	 if err!= nil {
-		 fmt.Println("error in read")
-	 }
-	 fmt.Printf("Bytes read:%s",bytesRead2)
-	 //fmt.Println("Data read:",byteSlice)
-	 bytesreadstring,err :=bufferRd.ReadString('\n')
-	 if err!= nil {
+	bytesRead2, err := bufferRd.ReadBytes('\b')
+	if err != nil {
 		fmt.Println("error in read")
 	}
-	fmt.Printf("Bytes read:%s",bytesreadstring)
+	fmt.Printf("Bytes read:%s", bytesRead2)
+	//fmt.Println("Data read:",byteSlice)
+	bytesreadstring, err := bufferRd.ReadString('\n')
+	if err != nil {
+		fmt.Println("error in read")
+	}
+	fmt.Printf("Bytes read:%s", bytesreadstring)
+}
+func scannerReader() {
+	file, err := os.Open("test01.txt")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanWords)
+	// fmt.Println(token)
+	//success := scanner.Scan()
+	//fmt.Println(success)
+	for scanner.Scan(){
+		// Get data from scan with Bytes() or Text()
+		fmt.Println(scanner.Text())
+		fmt.Println(scanner.Bytes())
+	}
+	//fmt.Println("First word found:", scanner.Text())
 }
