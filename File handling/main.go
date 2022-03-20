@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -31,23 +34,31 @@ func main() {
 	CheckPermissions("test.txt")
 	change("test.txt")
 	//copyFile("test_copy.txt", "test.txt")
+	//copy file
 	originalFile, err := os.Open("test.txt")
-    if err != nil {
-        fmt.Println(err.Error())
-    }
-    defer originalFile.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer originalFile.Close()
 	newFile, err := os.Create("test_copy.txt")
-    if err != nil {
+	if err != nil {
 		fmt.Println(err.Error())
-    }
-    defer newFile.Close()
-	bytesWritten, err = io.Copy(newFile, originalFile)
-    if err != nil {
+	}
+	defer newFile.Close()
+	bytesWritten, err := io.Copy(newFile, originalFile)
+	if err != nil {
 		fmt.Println(err.Error())
-    }
-    fmt.Printf("Copied %d bytes.", bytesWritten)
-	
+	}
+	fmt.Printf("Copied %d bytes.", bytesWritten)
+
 	//fmt.Println(byteswritten)
+	seekFile()
+	writeFile()
+	//Quick Write to File
+	quickWrite()
+	bufferWrite()
+	readFile()
+	bufferReader()
 
 }
 
@@ -170,9 +181,198 @@ func change(fileName string) {
 		fmt.Println(err)
 	}
 }
+func seekFile() {
+	file, _ := os.Open("test.txt")
+	defer file.Close()
 
-//copying file
-func copyFile(oldfile string) {
+	// Offset is how many bytes to move
+	// Offset can be positive or negative
+	var offset int64 = 5
 
-	
+	// Whence is the point of reference for offset
+	// 0 = Beginning of file
+	// 1 = Current position
+	// 2 = End of file
+	var whence int = 0
+	newPosition, err := file.Seek(offset, whence)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Just moved to 5:", newPosition)
+
+	// Go back 2 bytes from current position
+	newPosition, err = file.Seek(-2, 2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Just moved back two:", newPosition)
+
+	// Find the current position by getting the
+	// return value from Seek after moving 0 bytes
+	currentPosition, err := file.Seek(0, 1)
+	fmt.Println("Current position:", currentPosition)
+
+	// Go to beginning of file
+	newPosition, err = file.Seek(0, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Position after seeking 0,0:", newPosition)
+}
+
+//write bytes
+func writeFile() {
+	// Open a new file for writing only
+	file, err := os.OpenFile(
+		"test.txt",
+		os.O_WRONLY|os.O_APPEND|os.O_CREATE,
+		0666,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	// Write bytes to file
+	byteSlice := []byte("is role the master!\n")
+	bytesWritten, err := file.Write(byteSlice)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Wrote %d bytes.\n", bytesWritten)
+}
+
+//Quick Write to File
+func quickWrite() {
+	//Quick Write to File
+	if err := ioutil.WriteFile("test2.txt", []byte("Hi\n"), 0666); err != nil {
+		fmt.Println(err.Error())
+	}
+
+}
+func bufferWrite() {
+	f, err := os.OpenFile("test.txt", os.O_WRONLY, 777)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer f.Close()
+	//buffer writer
+	bufferWr := bufio.NewWriter(f)
+	//write bytesWritten
+	bytesWritten, err := bufferWr.WriteString("nahid master")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(bytesWritten)
+	// Check how much is stored in buffer waiting
+	unflashbufffer := bufferWr.Buffered()
+	fmt.Println("Bytes buffered:", unflashbufffer)
+	bytesAvailable := bufferWr.Available()
+	fmt.Println("Bytes available:", bytesAvailable)
+	bufferWr.Flush()
+	unflashbufffer = bufferWr.Buffered()
+	fmt.Println("Bytes buffered:", unflashbufffer)
+	bytesAvailable = bufferWr.Available()
+	fmt.Println("Bytes available:", bytesAvailable)
+	bufferWr.Reset(bufferWr)
+
+	// See how much buffer is available
+	bytesAvailable = bufferWr.Available()
+	fmt.Println("Bytes available:", bytesAvailable)
+	bufferWr = bufio.NewWriterSize(bufferWr, 8000)
+	bytesAvailable = bufferWr.Available()
+	fmt.Println("Bytes available:", bytesAvailable)
+
+}
+
+//Read up to n Bytes from File
+func readFile() {
+	file, err := os.Open("test.txt")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer file.Close()
+	byteslice := make([]byte, 100)
+	bytesread, err := file.Read(byteslice)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("Bytes read:", bytesread)
+	fmt.Println("Data read:", byteslice)
+	//full read
+	//byteslice=make([]byte,100)
+	bytesread, err = io.ReadFull(file, byteslice)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("Bytes read:", bytesread)
+	fmt.Println("Data read:", byteslice)
+	//read At least
+	minBytes := 80
+	bytesread2, err := io.ReadAtLeast(file, byteslice, minBytes)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("Bytes read:", bytesread2)
+	fmt.Println("Data read:", byteslice)
+	//read all
+
+	file, err = os.Open("test01.txt")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer file.Close()
+
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Printf("hex %x\n", data)
+	fmt.Printf("string :%s\n", data)
+	fmt.Println("len data:", len(data))
+	// Quick Read Whole File to Memory
+	// data, err := ioutil.ReadFile("test01.txt")
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+	// fmt.Printf("hex %x\n", data)
+	// fmt.Printf("string :%s\n", data)
+	// fmt.Println("len data:", len(data))
+
+}
+func bufferReader() {
+	file, err := os.Open("test01.txt")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	bufferRd := bufio.NewReader(file)
+	 // Get bytes without advancing pointer
+	//  byteSlice := make([]byte, 20)
+	//  byteSlice, err = bufferRd.Peek(5)
+	//  if err != nil {
+	// 	fmt.Println(err.Error())
+	//  }
+	//  fmt.Printf("Peeked at 5 bytes: %s\n", byteSlice)
+	//  bytesRead,err:=bufferRd.Read(byteSlice)
+	//  if err!= nil {
+	// 	 fmt.Println(err.Error())
+	//  }
+	//  fmt.Println("Bytes read:",bytesRead)
+	//  fmt.Println("Data read:",byteSlice)
+	//  bytesRead1 ,err :=bufferRd.ReadByte()
+	//  if err!= nil {
+	// 	 fmt.Println(err.Error())
+	//  }
+	//  fmt.Printf("Bytes read:%c",bytesRead1)
+	 bytesRead2 ,err :=bufferRd.ReadBytes('\b')
+	 if err!= nil {
+		 fmt.Println("error in read")
+	 }
+	 fmt.Printf("Bytes read:%s",bytesRead2)
+	 //fmt.Println("Data read:",byteSlice)
+	 bytesreadstring,err :=bufferRd.ReadString('\n')
+	 if err!= nil {
+		fmt.Println("error in read")
+	}
+	fmt.Printf("Bytes read:%s",bytesreadstring)
 }
