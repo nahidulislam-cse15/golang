@@ -6,26 +6,39 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	fmt.Println(w.Header().Get("Content-Type"))
+	//fmt.Println(w.Header().Get("Content-Type"))
 	fmt.Fprint(w, "<h1>Welcome to Master Academy</h1>")
 }
 
 func pathHandler(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Fprint(w, r.URL.Path)
+	//fmt.Fprint(w, r.URL.Path)
+	switch r.URL.Path{
+	 case "/":
+		home(w,r)
+	case "/about":
+		about(w,r)	
+	case "/contact":
+		contact(w,r)
+	case "/blog":
+		blog(w,r)	
+	default:
+		fmt.Fprint(w,"not found page")
+
+	}
+
 }
 
-// func about(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type:", "text/plain")
-// 	fmt.Fprint(w, "<h1>Welcome to Master Academy about page</h1>")
-// }
-// func contact(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Fprint(w, "<h1>Welcome to Master Academy contact page</h1>")
-// }
-// func blog(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Fprint(w, "<h1>Wlcome to Master Academy blog page</h1>")
-// }
+func about(w http.ResponseWriter, r *http.Request) {
+	
+	fmt.Fprint(w, "<h1>Welcome to Master Academy about page</h1>")
+}
+func contact(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "<h1>Welcome to Master Academy contact page</h1>")
+}
+func blog(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "<h1>Welcome to Master Academy blog page</h1>")
+}
 
 func main() {
 	http.HandleFunc("/", pathHandler)
