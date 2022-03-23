@@ -8,6 +8,8 @@ import (
 func home(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(w.Header().Get("Content-Type"))
 	fmt.Fprint(w, "<h1>Welcome to Master Academy</h1>")
+	//fmt.Println(w.Response.StatusCode)
+	//http.StatusNotFound
 }
 
 func pathHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +25,15 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 	case "/blog":
 		blog(w,r)	
 	default:
-		fmt.Fprint(w,"not found page")
+		//way 1
+		// w.WriteHeader(http.StatusNotFound)
+		// fmt.Fprint(w,"Page not found")
+
+		//way 2
+		http.Error(w,"Page not found",http.StatusNotFound)
+		//way 3
+		http.Error(w,http.StatusText(http.StatusNotFound),http.StatusNotFound)
+
 
 	}
 
