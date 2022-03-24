@@ -12,32 +12,34 @@ func home(w http.ResponseWriter, r *http.Request) {
 	//http.StatusNotFound
 }
 
-func pathHandler(w http.ResponseWriter, r *http.Request) {
+// func pathHandler(w http.ResponseWriter, r *http.Request) {
 
-	//fmt.Fprint(w, r.URL.Path)
-	switch r.URL.Path{
-	 case "/":
-		home(w,r)
-	case "/about":
-		about(w,r)	
-	case "/contact":
-		contact(w,r)
-	case "/blog":
-		blog(w,r)	
-	default:
-		//way 1
-		// w.WriteHeader(http.StatusNotFound)
-		// fmt.Fprint(w,"Page not found")
+// 	fmt.Fprintln(w, r.URL.Path)//deoceded path
+// 	fmt.Fprintln(w, r.URL.RawPath)//encoded path
+// 	switch r.URL.Path{
+// 	 case "/":
+// 		home(w,r)
+// 	case "/about":
+// 		about(w,r)	
+// 	case "/contact":
+// 		contact(w,r)
+// 	case "/blog":
+// 		blog(w,r)	
+// 	default:
+// 		//way 1
+// 		// w.WriteHeader(http.StatusNotFound)
+// 		// fmt.Fprint(w,"Page not found")
 
-		//way 2
-		http.Error(w,"Page not found",http.StatusNotFound)
-		//way 3
-		http.Error(w,http.StatusText(http.StatusNotFound),http.StatusNotFound)
+// 		//way 2
+// 		http.Error(w,"Page not found",http.StatusNotFound)
+// 		//way 3
+// 		http.Error(w,http.StatusText(http.StatusNotFound),http.StatusNotFound)
 
 
-	}
+// 	}
 
-}
+// }
+
 
 func about(w http.ResponseWriter, r *http.Request) {
 	
@@ -49,14 +51,40 @@ func contact(w http.ResponseWriter, r *http.Request) {
 func blog(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "<h1>Welcome to Master Academy blog page</h1>")
 }
+type Router struct {} 
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request){
+	switch r.URL.Path{
+	case "/":
+	   home(w,r)
+   case "/about":
+	   about(w,r)	
+   case "/contact":
+	   contact(w,r)
+   case "/blog":
+	   blog(w,r)	
+   default:
+	   //way 1
+	   // w.WriteHeader(http.StatusNotFound)
+	   // fmt.Fprint(w,"Page not found")
 
+	   //way 2
+	   http.Error(w,"Page not found",http.StatusNotFound)
+	   //way 3
+	   http.Error(w,http.StatusText(http.StatusNotFound),http.StatusNotFound)
+
+
+   }
+}
 func main() {
+
 	http.HandleFunc("/", pathHandler)
 	// http.HandleFunc("/about", about)
 	// http.HandleFunc("/contact", contact)
 	// http.HandleFunc("/blog", blog)
 
 	fmt.Println("Welcome")
-	http.ListenAndServe(":8090", nil)
+	//http.ListenAndServe(":8090", nil)
+	var router Router
+	http.ListenAndServe(":8090", router)
 
 }
