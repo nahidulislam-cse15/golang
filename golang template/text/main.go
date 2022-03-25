@@ -10,19 +10,19 @@ import (
 type Todo struct {
 	Id int
 	Name   string
-	Status bool
+	Status string
 	Day   int
 	Month time.Month
 }
 
 func main() {
 
-	text := `your task{{.Id}} is {{ .Name}} and the task  {{if .Status}} is done {{else}} is left{{end}} Today is: {{ .Day }} {{.Month }}
+	text := `your task{{.Id}} is {{ .Name}} and the task  {{if eq .Status "yes"}} is done {{else}} is left{{end}} Today is: {{ .Day }} {{.Month }}
 `
 	current_time := time.Now()
-	task1 := Todo{1,"golang text template", true,current_time.Day(),current_time.Month()}
-	task2 := Todo{2,"complete english module 2",true,current_time.Day(),current_time.Month()}
-	task3 := Todo{3,"complete english module 3",false,current_time.Day(),current_time.Month()}
+	task1 := Todo{1,"golang text template", "yes",current_time.Day(),current_time.Month()}
+	task2 := Todo{2,"complete english module 2","yes",current_time.Day(),current_time.Month()}
+	task3 := Todo{3,"complete english module 3","no",current_time.Day(),current_time.Month()}
 	//fmt.Println(work.name)
 	todos := template.New("todos")
 
