@@ -47,9 +47,20 @@ Using the `with` action, you can define variables that’re available in that wi
  {{ with $x := <^>result-of-some-action<^> }} {{ $x }} {{ end }}
  ```
 ## Parsing Templates
-The three most important and most frequently used functions are:
+The three most important and most frequently used functions are:used for text
 
 1. New — allocates new, undefined template,
 1. Parse — parses given template string and return parsed template
 1. Execute — applies parsed template to the data structure and writes result to the given writer.
 The following code shows above-mentioned functions in the action:
+for html template use `Parse `and `Execute`
+
+# Verifying Templates
+template packages provide the `Must` functions, used to verify that a template is valid during parsing. The Must function provides the same result as if we manually checked for the error, like in the previous example.
+
+This approach saves you typing, but if you encounter an error, your application will panic. For advanced error handling, it’s easier to use above solution instead of Must function.
+
+The Must function takes a template and error as arguments. It’s common to provide New function as an argument to it:
+```
+t := template.Must(template.New("todos").Parse("You have task named \"{{ .Name}}\" with description: \"{{ .Description}}\""))
+```
