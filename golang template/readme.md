@@ -64,3 +64,42 @@ The Must function takes a template and error as arguments. It’s common to prov
 ```
 t := template.Must(template.New("todos").Parse("You have task named \"{{ .Name}}\" with description: \"{{ .Description}}\""))
 ```
+Date:26 March 2022
+# ParseFiles() vs ParseGlob()
+- ParseFiles() parsing multiple files must include their names argument and return the first file that matches 
+- ParseGlob() parsing multiple fileswith pattername ( *.go html) return the first of sorted file
+
+# Execute() vs ExecuteTemplate()
+- Execute() -Execute the returnd file
+- ExecuteTemplate() -execute which filename was passed as 2nd argument 
+# define
+define section in different file and are loaded in base file 
+```
+{{define "name"}} 
+//statement
+{{end}}
+
+//to include in base file
+{{template "name" .}} // . for data passs
+
+```
+# block
+block is same as define but block may b overridden
+```
+{block "name"}} // . for data passs
+//statement
+{{end}}
+```
+
+# range 
+used for looping in slice ,array,map etc
+```
+{{range $_,$v:=.}} //to use  data from pipeline
+//statement 
+{{end}}
+
+``` 
+# sources
+- [go template](https://blog.gopheracademy.com/advent-2017/using-go-templates/) 
+- [go html template](https://pkg.go.dev/html/template)
+- [go text template](https://pkg.go.dev/text/template)
