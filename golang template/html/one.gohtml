@@ -1,5 +1,11 @@
 {{define "top-section1"}}
 this is top section 1
+<div>
+{{range $_,$v:=.}}
+<li>{{$v}}</li>
+{{end}}
+</div>
+
 {{end}}
 {{define "default"}}
 this is override dafult block
