@@ -47,12 +47,12 @@
 	</head>
 
 	<body>
-
+{{block "header" .}}
 		<!--Loader-->
 		<div id="global-loader">
 			<img src="/resources/images/loader.svg" class="loader-img" alt="img">
 		</div><!--/Loader-->
-{{block "topbar" .}}
+
 		<!--Section-->
 		<div class="banner-1 cover-image  bg-background2" data-image-src="/resources/images/banners/banner1.jpg">
 			<!--Topbar-->
@@ -301,8 +301,8 @@
 						</div>
 					</div>
 				</div><!--/Topbar-->
-{{end}}
-{{block "header" .}}
+
+
 				<!--Header-->
 				<header class="header-search header-logosec p-2">
 					<div class="container">
@@ -334,8 +334,7 @@
 						</div>
 					</div>
 				</header><!--/Header-->
-{{end}}
-{{block "Mobile Header" .}}
+
 				<!-- Mobile Header -->
 				<div class="sticky">
 					<div class="horizontal-header clearfix ">
@@ -348,8 +347,6 @@
 					</div>
 				</div>
 				<!-- /Mobile Header -->
-	{{end}}
-	{{block "Horizontal-main" .}}
 
 				<!--Horizontal-main -->
 				<div class="header-style horizontal-main bg-dark-transparent clearfix">
@@ -486,7 +483,7 @@
 				</div>
 			</div><!--/Horizontal-main -->
 {{end}}  
-{{block "Header-Text" .}} 
+{{block "container" .}} 
 			<!--Section-->
 			<section>
 				<div class="sptb-2 sptb-tab">
@@ -2256,7 +2253,7 @@
 			</footer>
 
 		</section><!--/Footer Section-->
-{{end}}
+
 
 		<!-- Back to top -->
 		<a href="#top" id="back-to-top" ><i class="fa fa-long-arrow-up"></i></a>
@@ -2316,6 +2313,6 @@
 
 		<!-- Custom js-->
 		<script src="/resources/js/custom.js"></script>
-
+{{end}}
 	</body>
 </html>
