@@ -25,7 +25,7 @@
 				    <div class="single-page" >
 						<div class="col-lg-5 col-xl-4 col-md-6 d-block mx-auto">
 							<div class="wrapper wrapper2">
-								<form id="Register" class="card-body" tabindex="500">
+								<form action="/registration" id="Register" class="card-body" tabindex="500" method="POST">
 									<h3>Register</h3>
 									<div class="name">
 										<input type="text" name="name">
@@ -39,9 +39,10 @@
 										<input type="password" name="password">
 										<label>Password</label>
 									</div>
-									<div class="submit">
-										<a class="btn btn-primary btn-block" href="index.html">Register</a>
-									</div>
+									<input type="submit" value="register" class="btn btn-primary">
+									{{/* <div class="submit">
+										<a class="btn btn-primary btn-block" href="/registration">Register</a>
+									</div> */}}
 									<p class="text-dark mb-0">Already have an account?<a href="login.html" class="text-primary ml-1">Sign In</a></p>
 								</form>
 								<hr class="divider">

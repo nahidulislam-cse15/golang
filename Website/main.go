@@ -10,6 +10,7 @@ func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/log", login)
 	http.HandleFunc("/register", register)
+	http.HandleFunc("/registration", registration)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("./assets"))))
 
 	http.ListenAndServe(":8090", nil)
@@ -47,4 +48,12 @@ func register(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 	temp.Execute(w, nil)
+}
+func registration(w http.ResponseWriter, r *http.Request) {
+	name := r.FormValue("name")
+	email:=r.FormValue("mail")
+	pass:=r.FormValue("password")
+	fmt.Println(name,email,pass)
+	fmt.Fprintln(w,`succesfully registered`)
+
 }
