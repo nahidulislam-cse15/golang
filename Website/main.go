@@ -50,10 +50,19 @@ func register(w http.ResponseWriter, r *http.Request) {
 	temp.Execute(w, nil)
 }
 func registration(w http.ResponseWriter, r *http.Request) {
-	name := r.FormValue("name")
-	email:=r.FormValue("mail")
-	pass:=r.FormValue("password")
-	fmt.Println(name,email,pass)
-	fmt.Fprintln(w,`succesfully registered`)
+	// name := r.FormValue("name")
+	// email := r.FormValue("mail")
+	// pass := r.FormValue("password")
+	//display in command line
+	//fmt.Println(name,email,pass)
+	//display as response in browser
+//fmt.Fprintf(w, `succesfully registered name:%s email:%s pass:%s`, name, email, pass)
+	//get value via loop 
+	r.ParseForm()
+	for k, v := range r.Form {
+		
+		fmt.Println(k,":",v)
+	}
+	fmt.Fprintln(w, `succesfully registered`)
 
 }
