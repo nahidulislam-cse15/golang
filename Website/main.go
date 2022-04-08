@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
 	_ "github.com/go-sql-driver/mysql"
 )
+
 var db *sql.DB
 var err error
-func init(){
-	db,err=sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/website_db")
+
+func init() {
+	db, err = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/website_db")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-//	defer db.Close()
+	//	defer db.Close()
 	fmt.Println("db connection succesful")
 }
 func main() {
@@ -22,6 +25,7 @@ func main() {
 	http.HandleFunc("/log", login)
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/registration", registration)
+	http.HandleFunc("/user", user)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("./assets"))))
 
 	http.ListenAndServe(":8090", nil)
@@ -60,6 +64,28 @@ func register(w http.ResponseWriter, r *http.Request) {
 	}
 	temp.Execute(w, nil)
 }
+func user(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, `welcome to user`)
+	qs := "select name,email from `user`"
+	rows, err := db.Query(qs)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			//id                    int64
+			name, email string
+		)
+		if err := rows.Scan( &name, &email); err != nil {
+			fmt.Println(err)
+		}
+		//fmt.Printf("id %d name is %s\n", id, name)
+		fmt.Fprintf(w, "user name:%s email:%s \n", name, email)
+	}
+
+}
 func registration(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	email := r.FormValue("mail")
@@ -67,16 +93,16 @@ func registration(w http.ResponseWriter, r *http.Request) {
 	//display in command line
 	//fmt.Println(name,email,pass)
 	//display as response in browser
-//fmt.Fprintf(w, `succesfully registered name:%s email:%s pass:%s`, name, email, pass)
-	//get value via loop 
+	//fmt.Fprintf(w, `succesfully registered name:%s email:%s pass:%s`, name, email, pass)
+	//get value via loop
 	// r.ParseForm()
 	// for k, v := range r.Form {
-		
+
 	// 	fmt.Println(k,":",v)
 	// }
 	// fmt.Fprintln(w, `succesfully registered`)
 	//inser into db
-	qs:="INSERT INTO `user` (`id`, `name`, `email`, `password`) VALUES (NULL, '%s', '%s', '%s');"
+	qs := "INSERT INTO `user` (`id`, `name`, `email`, `password`) VALUES (NULL, '%s', '%s', '%s');"
 	sql := fmt.Sprintf(qs, name, email, pass)
 	//fmt.Println(sql)
 	insert, err := db.Query(sql)
@@ -85,7 +111,5 @@ func registration(w http.ResponseWriter, r *http.Request) {
 	}
 	defer insert.Close()
 	fmt.Fprintln(w, `succesfully registered`)
-
-
 
 }
