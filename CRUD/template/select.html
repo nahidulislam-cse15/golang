@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Products List</title>
 </head>
 <body>
-    
+    <div style="font-size: x-large;">All Products</div>
+<a href="/insert">Insert New Product</a><br><br><br>
+{{range .}}
+  ID: {{.ID}} Name: {{.Name}}<br>
+  Price: {{.Price}}<br>
+Quantity_in_stock: {{.Quantity_in_stock}}<br>
+  <a href="/update/?idproducts={{.ID}}">Update</a>
+  <a href="/delete/?idproducts={{.ID}}">Delete</a>
+  <br><br>
+{{end}}
 </body>
 </html>
