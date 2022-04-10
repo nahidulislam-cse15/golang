@@ -19,7 +19,7 @@ type Product struct {
 	Name              string
 	Quantity_in_stock int
 	Price             float32
-	Description       string
+	
 }
 
 func init() {
@@ -36,8 +36,9 @@ func main() {
 	temp, _ = template.ParseGlob("template/*.gohtml")
 	http.HandleFunc("/", home)
 	http.HandleFunc("/insert", insert)
-	http.HandleFunc("/update", update)
-	http.HandleFunc("/delete", delete)
+	http.HandleFunc("/update/", update)
+	http.HandleFunc("/updateresult/", updateResultHandler)
+	http.HandleFunc("/delete/", delete)
 	http.HandleFunc("/successful", succesful)
 	http.ListenAndServe(":8080", nil)
 }
@@ -65,7 +66,7 @@ func succesful(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "insert/ update/delete succesfully")
 }
 func insert(w http.ResponseWriter, r *http.Request) {
-	//temp.ExecuteTemplate(w, "template/insert.gohtml", nil)
+	//temp.ExecuteTemplate(w, "template/insertgit .gohtml", nil)
 	//fmt.Fprintf(w, "welcome to insert update")
 	//temp.Execute(w, nil)
 	if r.Method == "GET" {
@@ -108,8 +109,70 @@ func insert(w http.ResponseWriter, r *http.Request) {
 
 }
 func update(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "welcome to home update")
+	r.ParseForm()
+	id := r.FormValue("idproducts")
+	fmt.Println(id)
+	row := db.QueryRow("SELECT * FROM store.products WHERE product_id= ?;", id)
+	var p Product
+	// func (r *Row) Scan(dest ...interface{}) error
+	err := row.Scan(&p.ID, &p.Name, &p.Quantity_in_stock, &p.Price)
+	if err != nil {
+		fmt.Println(err)
+		http.Redirect(w, r, "/home", 307)
+		return
+	}
+	temp.ExecuteTemplate(w, "update.gohtml", p)
 }
+
+func updateResultHandler(w http.ResponseWriter, r *http.Request) {
+
+	r.ParseForm()
+	id := r.FormValue("idproducts")
+	name := r.FormValue("name")
+	price := r.FormValue("price")
+	quantity_in_stock:= r.FormValue("quantity_in_stock")
+	upStmt := "UPDATE `store`.`products` SET `name` = ?, `unit_price` = ?, `quantity_in_stock` = ? WHERE (`product_id` = ?);"
+	// func (db *DB) Prepare(query string) (*Stmt, error)
+	stmt, err := db.Prepare(upStmt)
+	if err != nil {
+		fmt.Println("error preparing stmt")
+		panic(err)
+	}
+	fmt.Println("db.Prepare err:", err)
+	fmt.Println("db.Prepare stmt:", stmt)
+	defer stmt.Close()
+	var res sql.Result
+	// func (s *Stmt) Exec(args ...interface{}) (Result, error)
+	res, err = stmt.Exec(name, price, quantity_in_stock, id)
+	rowsAff, _ := res.RowsAffected()
+	if err != nil || rowsAff != 1 {
+		fmt.Println(err)
+		temp.ExecuteTemplate(w, "result.gohtml", "There was a problem updating the product")
+		return
+	}
+	temp.ExecuteTemplate(w, "result.gohtml", "Product was Successfully Updated")
+}
+
 func delete(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "welcome to delete")
+	r.ParseForm()
+	id := r.FormValue("idproducts")
+	delstmt :="delete from `store`.`products` where `product_id` = ? ;"
+	stmt, err := db.Prepare(delstmt)
+	if err != nil {
+		fmt.Println("error preparing stmt")
+		panic(err)
+	}
+	fmt.Println("db.Prepare err:", err)
+	fmt.Println("db.Prepare stmt:", stmt)
+	defer stmt.Close()
+	var res sql.Result
+	// func (s *Stmt) Exec(args ...interface{}) (Result, error)
+	res, err = stmt.Exec(id)
+	rowsAff, _ := res.RowsAffected()
+	if err != nil || rowsAff != 1 {
+		fmt.Println(err)
+		temp.ExecuteTemplate(w, "result.gohtml", "There was a problem deleting the product")
+		return
+	}
+	temp.ExecuteTemplate(w, "result.gohtml", "Product was Successfully deleted")
 }
