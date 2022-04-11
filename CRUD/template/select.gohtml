@@ -9,14 +9,37 @@
 <body>
     <div style="font-size: x-large;">All Products</div>
 <a href="/insert">Insert New Product</a><br><br><br>
-{{range .}}
+{{/* {{range .}}
   ID: {{.ID}} Name: {{.Name}}<br>
   Price: {{.Price}}<br>
-Quantity_in_stock: {{.Quantity_in_stock}}<br>
+Quantity_in_stock: {{.Quantity_in_stock}}<br> */}}
+  <div>
+  <table border="1" cellspacing="0">
+  <tr>
+  <th>ID</th>
+  <th>Name</th>
+  <th>Quantity_in_stock</th>
+ <th> Unit_Price</th>
+ <th>Update Link</th>
+ <th> Delete</th>
 
-  <a href="/update/?idproducts={{.ID}}">Update</a>
-  <a href="/delete/?idproducts={{.ID}}">Delete</a>
-  <br><br>
-{{end}}
+  </tr>
+{{range .}}
+
+  <tr>
+  <td>{{.ID}} </td>    
+  <td>{{.Name}}</td>
+  <td> {{.Price}}<br>
+  <td> {{.Quantity_in_stock}}</td>
+   <td><a href="/update/?idproducts={{.ID}}">Update</a></td>
+
+<td>  <a href="/delete/?idproducts={{.ID}}">Delete</a></td>
+  </tr>
+   {{end}}
+  </table>
+  </div>
+
+
+
 </body>
 </html>
