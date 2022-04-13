@@ -39,7 +39,6 @@ func main() {
 	http.HandleFunc("/update/", update)
 	http.HandleFunc("/updateresult/", updateResultHandler)
 	http.HandleFunc("/delete/", delete)
-	http.HandleFunc("/successful", succesful)
 	http.ListenAndServe(":8080", nil)
 }
 func home(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +104,7 @@ func insert(w http.ResponseWriter, r *http.Request) {
 	rowsAffected, _ := res.RowsAffected()
 	fmt.Println("ID of last row inserted:", lastInserted)
 	fmt.Println("number of rows affected:", rowsAffected)
-	temp.ExecuteTemplate(w, "insert.gohtml", "Product Successfully Inserted")
+	temp.ExecuteTemplate(w, "result.gohtml", "Product Successfully Inserted")
 
 }
 func update(w http.ResponseWriter, r *http.Request) {
