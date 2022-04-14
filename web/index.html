@@ -11,9 +11,11 @@
       id="form"
       enctype="multipart/form-data"
       action="/upload"
-      method="POST"
+      method="POST" 
     >
-      <input class="input file-input" type="file" name="file" multiple />
+      <input class="input file-input" type="file" name="file1" multiple accept="image/*">
+      <input class="input file-input" type="file" name="file2" multiple >
+      <input class="input file-input" type="file" name="file3" multiple >
       <button class="button" type="submit">Submit</button>
     </form>
   </body>
